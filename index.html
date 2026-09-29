@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Лотерея племени Луны</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="stars"></div>
+  <main class="layout">
+    <section class="card lottery">
+      <div class="moon">☾</div>
+      <h1>Лотерея племени Луны</h1>
+      <p class="subtitle">Каждый участник получает один приз.</p>
+
+      <div id="formView">
+        <label for="name">Имя персонажа CatWar</label>
+        <input id="name" maxlength="80" autocomplete="off" placeholder="Введите имя">
+        <button id="spinButton">Крутить рулетку</button>
+        <p id="error" class="error" aria-live="polite"></p>
+      </div>
+
+      <div id="resultView" class="hidden">
+        <p class="won-label">Ваш приз</p>
+        <div id="prize" class="prize"></div>
+        <div id="couponBox" class="coupon-box hidden">
+          <div class="coupon-label">Код купона</div>
+          <div id="coupon" class="coupon"></div>
+          <button id="copyButton" class="secondary">Скопировать код</button>
+        </div>
+        <p class="small">Сохраните код купона. Повторно участвовать с этим именем нельзя.</p>
+      </div>
+    </section>
+
+    <aside class="card winners">
+      <div class="winners-head">
+        <div>
+          <h2>Уже выиграли</h2>
+          <span id="winnerCount">0 участников</span>
+        </div>
+      </div>
+      <div id="winnersList" class="winners-list">
+        <div class="loading">Загрузка…</div>
+      </div>
+    </aside>
+  </main>
+
+  <div id="rouletteOverlay" class="overlay hidden">
+    <div class="roulette-card">
+      <div class="spinner">☾</div>
+      <h2>Луна выбирает приз…</h2>
+      <div id="rollingPrize" class="rolling-prize">…</div>
+    </div>
+  </div>
+
+  <script src="prizes.js"></script>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
