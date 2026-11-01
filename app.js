@@ -132,33 +132,30 @@ async function spin() {
       rollingPrize.textContent = demoPrizes[Math.floor(Math.random() * demoPrizes.length)] || "…";
     }, 80);
 
-    // Запрос к нашей новой функции, которая проверяет белый список
+    // Вызов функции в базе
     const result = await api("/rest/v1/rpc/draw_lottery", {
       method: "POST",
       body: JSON.stringify({ p_name: characterName })
     });
 
-    // ПРОВЕРКА: если сервер вернул success: false (имени нет в списке)
-    if (!result.success) {
-      clearInterval(timer);
-      overlay.classList.add("hidden");
-      showError(result.error); // Показываем ошибку "Это имя не участвует в розыгрыше"
+    clearInterval(timer);
+    overlay.classList.add("hidden");
+
+    // ЕСЛИ СЕРВЕР ВЕРНУЛ ОШИБКУ (ИМЕНИ НЕТ В СПИСКЕ) — ПРОСТО НИЧЕГО НЕ ДЕЛАЕМ
+    if (result.error) {
       spinButton.disabled = false;
-      return; // Прерываем выполнение, приз не показываем
+      return; 
     }
 
-    // Если success: true — показываем приз
-    clearInterval(timer);
+    // ЕСЛИ ВСЕ ОК — ПОКАЗЫВАЕМ КУПОН
     rollingPrize.textContent = result.prize_name;
     await new Promise(resolve => setTimeout(resolve, 900));
-    overlay.classList.add("hidden");
     showResult(result);
     await loadWinners();
     
   } catch (err) {
     if (timer) clearInterval(timer);
     overlay.classList.add("hidden");
-    showError(err.message || "Не удалось провести розыгрыш.");
     spinButton.disabled = false;
   }
 }
