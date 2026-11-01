@@ -127,7 +127,6 @@ async function spin() {
 
   let timer = null;
   try {
-    // The server chooses the actual prize. Animation is only visual.
     timer = setInterval(() => {
       rollingPrize.textContent = demoPrizes[Math.floor(Math.random() * demoPrizes.length)] || "…";
     }, 80);
