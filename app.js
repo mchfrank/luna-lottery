@@ -127,35 +127,26 @@ async function spin() {
 
   let timer = null;
   try {
-    // Анимация рулетки
+    // The server chooses the actual prize. Animation is only visual.
     timer = setInterval(() => {
       rollingPrize.textContent = demoPrizes[Math.floor(Math.random() * demoPrizes.length)] || "…";
     }, 80);
 
-    // Вызов функции в базе
     const result = await api("/rest/v1/rpc/draw_lottery", {
       method: "POST",
       body: JSON.stringify({ p_name: characterName })
     });
 
     clearInterval(timer);
-    overlay.classList.add("hidden");
-
-    // ЕСЛИ СЕРВЕР ВЕРНУЛ ОШИБКУ (ИМЕНИ НЕТ В СПИСКЕ) — ПРОСТО НИЧЕГО НЕ ДЕЛАЕМ
-    if (result.error) {
-      spinButton.disabled = false;
-      return; 
-    }
-
-    // ЕСЛИ ВСЕ ОК — ПОКАЗЫВАЕМ КУПОН
     rollingPrize.textContent = result.prize_name;
     await new Promise(resolve => setTimeout(resolve, 900));
+    overlay.classList.add("hidden");
     showResult(result);
     await loadWinners();
-    
   } catch (err) {
     if (timer) clearInterval(timer);
     overlay.classList.add("hidden");
+    showError(err.message || "Не удалось провести розыгрыш.");
     spinButton.disabled = false;
   }
 }
