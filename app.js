@@ -127,22 +127,34 @@ async function spin() {
 
   let timer = null;
   try {
-    // The server chooses the actual prize. Animation is only visual.
+    // Анимация рулетки
     timer = setInterval(() => {
       rollingPrize.textContent = demoPrizes[Math.floor(Math.random() * demoPrizes.length)] || "…";
     }, 80);
 
+    // Запрос к нашей новой функции, которая проверяет белый список
     const result = await api("/rest/v1/rpc/draw_lottery", {
       method: "POST",
       body: JSON.stringify({ p_name: characterName })
     });
 
+    // ПРОВЕРКА: если сервер вернул success: false (имени нет в списке)
+    if (!result.success) {
+      clearInterval(timer);
+      overlay.classList.add("hidden");
+      showError(result.error); // Показываем ошибку "Это имя не участвует в розыгрыше"
+      spinButton.disabled = false;
+      return; // Прерываем выполнение, приз не показываем
+    }
+
+    // Если success: true — показываем приз
     clearInterval(timer);
     rollingPrize.textContent = result.prize_name;
     await new Promise(resolve => setTimeout(resolve, 900));
     overlay.classList.add("hidden");
     showResult(result);
     await loadWinners();
+    
   } catch (err) {
     if (timer) clearInterval(timer);
     overlay.classList.add("hidden");
