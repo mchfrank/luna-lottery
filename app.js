@@ -65,16 +65,17 @@ async function loadWinners() {
   }
 
   try {
-    const rows = await api("/rest/v1/winners?select=character_name,prize_name,created_at&order=created_at.desc");
+    const rows = await api("/rest/v1/winners?select=character_name,created_at&order=created_at.desc");
     winnerCount.textContent = `${rows.length} ${plural(rows.length, "участник", "участника", "участников")}`;
     if (!rows.length) {
       winnersList.innerHTML = `<div class="loading">Пока никто не выиграл.</div>`;
       return;
     }
+    
+    // ТУТ УБРАН ВЫВОД ПРИЗА, ОСТАВЛЕНО ТОЛЬКО ИМЯ
     winnersList.innerHTML = rows.map(row => `
       <div class="winner">
         <div class="winner-name">${escapeHtml(row.character_name)}</div>
-        <div class="winner-prize">${escapeHtml(row.prize_name)}</div>
       </div>
     `).join("");
   } catch (err) {
